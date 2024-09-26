@@ -62,6 +62,8 @@
   <ItemGroup>
     <Compile Include="Assets\PlayerMoverment.cs" />
     <Compile Include="Assets\CameraMovement.cs" />
+    <Compile Include="Assets\FinishLine.cs" />
+    <Compile Include="Assets\DeathScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
