@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DeathScript : MonoBehaviour
 {
+    [SerializeField] AudioManager audioManager;
+
     public GameObject startPoint;
     public GameObject Player;
     // Start is called before the first frame update
@@ -22,6 +24,7 @@ public class DeathScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            audioManager.PlaySFX(audioManager.death);
             Player.transform.position = startPoint.transform.position;
         }
     }

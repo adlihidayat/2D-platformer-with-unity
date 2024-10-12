@@ -10,7 +10,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{3B33C16C-83D6-D194-C802-89E73B492B0A}</ProjectGuid>
+    <ProjectGuid>{C96A7591-F47E-D3CB-3CA0-13869C63B6A2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -61,9 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\PlayerMoverment.cs" />
+    <Compile Include="Assets\PauseMenu.cs" />
     <Compile Include="Assets\CameraMovement.cs" />
     <Compile Include="Assets\FinishLine.cs" />
     <Compile Include="Assets\DeathScript.cs" />
+    <Compile Include="Assets\AudioManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

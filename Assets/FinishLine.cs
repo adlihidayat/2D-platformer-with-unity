@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class FinishLine : MonoBehaviour
 {
+    [SerializeField] AudioManager audioManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +22,7 @@ public class FinishLine : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            audioManager.PlaySFX(audioManager.finish);
             SceneManager.LoadScene("level2");
         }
     }
