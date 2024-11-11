@@ -8,22 +8,30 @@ public class PlayerMovement : MonoBehaviour
 
     public float speed;
     private float Move;
-
+    private bool isRunning;
+    private bool isFacingRight = true;
     public float Jump;
     public bool isJumping;
-
+    public bool isGrounded;
+    public float groundCheckRadius;
+    public Transform groundCheck;
     private Rigidbody2D rb;
-
+    private Animator anim;
     private bool isWalking = false;  // To track if the walk sound is playing
+
+    public LayerMask whatIsGround;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
+
+
 
     void Update()
     {
-        Move = Input.GetAxis("Horizontal");
+        Move = Input.GetAxisRaw("Horizontal");
 
         // Move the player
         rb.velocity = new Vector2(speed * Move, rb.velocity.y);
@@ -47,7 +55,45 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(new Vector2(rb.velocity.x, Jump));
             Debug.Log("jump");
         }
+
+        CheckMovementDirection();
+        UpdateAnimations();
+        CheckSurroundings();
     }
+
+    private void CheckSurroundings()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround);
+    }
+
+
+    private void CheckMovementDirection()
+    {
+        if (isFacingRight && Move < 0)
+        {
+            Flip();
+        }
+        else if (!isFacingRight && Move > 0)
+        {
+            Flip();
+        }
+        if (rb.velocity.x != 0)
+        {
+            isRunning = true;
+        }
+        else
+        {
+            isRunning = false;
+        }
+    }
+
+    private void UpdateAnimations()
+    {
+        anim.SetBool("isRunning",  isRunning);
+        anim.SetBool("isGrounded", isGrounded);
+        anim.SetFloat("yVelocity", rb.velocity.y);
+    }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -63,5 +109,16 @@ public class PlayerMovement : MonoBehaviour
         {
             isJumping = true;
         }
+    }
+
+    private void Flip()
+    {
+        isFacingRight = !isFacingRight;
+        transform.Rotate(0.0f, 180.0f, 0.0f);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
 }
