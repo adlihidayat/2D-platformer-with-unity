@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerOutlineController : MonoBehaviour
 {
@@ -16,11 +17,12 @@ public class PlayerOutlineController : MonoBehaviour
     [SerializeField] private float fadeInDuration = 1f;
     private float currentFadeTime = 0f;
 
+    private bool lastFlipX = false;  // Track last flipX value
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Ganti referensi shader
         outlineMaterial = new Material(Shader.Find("Custom/OutlineGlow"));
         if (outlineMaterial == null)
         {
@@ -28,9 +30,8 @@ public class PlayerOutlineController : MonoBehaviour
             return;
         }
 
-        spriteRenderer.material = outlineMaterial; // Langsung gunakan outlineMaterial
+        spriteRenderer.material = outlineMaterial;
 
-        // Set properti awal
         outlineMaterial.SetFloat("_OutlineSize", 0);
         outlineMaterial.SetColor("_OutlineColor", normalOutlineColor);
         outlineMaterial.SetFloat("_GlowIntensity", glowIntensity);
@@ -38,16 +39,26 @@ public class PlayerOutlineController : MonoBehaviour
         StartCoroutine(FadeInOutline());
     }
 
-
     void LateUpdate()
     {
-        // Update material properties berdasarkan sprite orientation
-        if (spriteRenderer != null)
+        if (spriteRenderer != null && outlineMaterial != null)
         {
+            bool currentFlipX = spriteRenderer.flipX;
+
+            // Update material properties
             outlineMaterial.SetFloat("_FlipX", spriteRenderer.flipX ? 1 : 0);
             outlineMaterial.SetFloat("_FlipY", spriteRenderer.flipY ? 1 : 0);
+
+            // Add scale compensation if object is rotated
+            Vector3 scale = transform.lossyScale;
+            outlineMaterial.SetFloat("_ScaleX", Mathf.Sign(scale.x));
+            outlineMaterial.SetFloat("_ScaleY", Mathf.Sign(scale.y));
+
+            // Always use positive outline size
+            outlineMaterial.SetFloat("_OutlineSize", outlineSize);
         }
     }
+
 
     private IEnumerator FadeInOutline()
     {

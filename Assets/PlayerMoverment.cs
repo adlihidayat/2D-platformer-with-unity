@@ -18,11 +18,13 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private bool isWalking = false;  // To track if the walk sound is playing
+    private SpriteRenderer spriteRenderer;
 
     public LayerMask whatIsGround;
 
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();  // Initialize spriteRenderer
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
@@ -71,10 +73,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isFacingRight && Move < 0)
         {
+            Debug.Log("Flipping left");
             Flip();
         }
         else if (!isFacingRight && Move > 0)
         {
+            Debug.Log("Flipping right");
             Flip();
         }
         if (rb.velocity.x != 0)
@@ -111,11 +115,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Flip()
-    {
-        isFacingRight = !isFacingRight;
-        transform.Rotate(0.0f, 180.0f, 0.0f);
+private void Flip()
+{
+    isFacingRight = !isFacingRight;
+    spriteRenderer.flipX = !isFacingRight;  // Add this line
+
+        Vector3 localScale = transform.localScale;
+    localScale.x *= -1; // Membalikkan skala di sumbu X
+    transform.localScale = localScale;
+
     }
+
 
     private void OnDrawGizmos()
     {

@@ -4,9 +4,11 @@ Shader "Custom/OutlineGlow"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _OutlineColor ("Outline Color", Color) = (1,0,0,1)
-        _OutlineSize ("Outline Size", Range(0, 10)) = 1.5  // Increased default
-        _GlowIntensity ("Glow Intensity", Range(0, 5)) = 2.5  // Increased range and default
-        _SharpnessFactor ("Sharpness", Range(1, 10)) = 3  // New property for sharpness
+        _OutlineSize ("Outline Size", Range(0, 10)) = 1.5
+        _GlowIntensity ("Glow Intensity", Range(0, 5)) = 2.5
+        _SharpnessFactor ("Sharpness", Range(1, 10)) = 3
+        _FlipX ("Flip X", Float) = 0
+        _FlipY ("Flip Y", Float) = 0
     }
     
     SubShader
@@ -45,6 +47,8 @@ Shader "Custom/OutlineGlow"
             float _OutlineSize;
             float _GlowIntensity;
             float _SharpnessFactor;
+            float _FlipX;
+            float _FlipY;
             
             v2f vert (appdata v)
             {
@@ -57,12 +61,16 @@ Shader "Custom/OutlineGlow"
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 texelSize = _MainTex_TexelSize.xy * _OutlineSize;
+                 texelSize.x *= _FlipX;
+
+                // Apply flipping
+                float2 flip = float2(_FlipX > 0.5 ? -1.0 : 1.0, _FlipY > 0.5 ? -1.0 : 1.0);
+                texelSize *= flip;
                 
                 fixed4 col = tex2D(_MainTex, i.uv);
                 fixed alpha = col.a;
                 fixed4 outline = 0;
                 
-                // Sample more points for sharper outline
                 for(int j = 1; j <= _SharpnessFactor; j++)
                 {
                     float offset = j * (1.0 / _SharpnessFactor);
